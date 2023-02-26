@@ -1,5 +1,6 @@
 import React from "react";
 import "./FeaturedMovie.css";
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 
 export default ({item}) => {
 
@@ -10,6 +11,11 @@ export default ({item}) => {
     genres.push(item.genres[i].name);
   }
 
+  let description = item.overview;
+
+  if(description.length > 200){
+    description = description.substring(0,200)+"..."
+  }
   return (
     <section className="featured" style={{
       backgroundSize:'cover',
@@ -25,9 +31,9 @@ export default ({item}) => {
             <div className="featured-points">{item.vote_average} pontos</div>
             <div className="featured-year">{firstDate.getFullYear()}</div>
             <div className="featured-seasons">{item.number_of_seasons} temporada{item.number_of_seasons !== 1? 's': ''}</div>
-            <div className="featured-overview">{item.overview}</div>
+            <div className="featured-overview">{description}</div>
             <div className="featured-buttons">
-              <a href={`/watch/${item.id}`} className="button-1">▶ Assistir</a>
+              <a href={`/watch/${item.id}`} className="button-1"><PlayArrowIcon/>Assistir</a>
               <a href={`/list/add/${item.id}`} className="button-2">+ Minha Lista</a>
             </div>
             <div className="featured-genres"><strong>Genres:</strong> {genres.join(', ')}</div>
