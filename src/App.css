@@ -10,3 +10,28 @@ body{
   color: #fff;
   font-family: 'Roboto Serif', serif;
 }
+.lists{
+  margin-top: -90px;
+}
+footer{
+  margin: 30px 0px;
+  text-align: center;
+}
+footer span{
+  color: purple;
+}
+.loading{
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 99;
+  background-color: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.loading img{
+  width: 400px;
+}
