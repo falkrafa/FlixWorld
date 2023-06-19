@@ -3,17 +3,14 @@ import "./MovieRow.css";
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import CloseIcon from '@mui/icons-material/Close';
-import { useNavigate } from "react-router-dom";
-import ReactPlayer from 'react-player';
 import Player from "./videoPlayer";
-
 const API_KEY = "bbd9548ca40094e1de167abba96ec747";
 
 export default ({ title, items, slug }) => {
   const [scrollX, setScrollX] = useState(-400);
   const [showVideoPlayer, setShowVideoPlayer] = useState(false);
   const [videoUrl, setVideoUrl] = useState('');
-
+  const [selectedItem, setSelectedItem] = useState(null);
   const handleLeftArrow = () => {
     let x = scrollX + Math.round(window.innerWidth / 2);
     if (x > 0) {
@@ -33,26 +30,28 @@ export default ({ title, items, slug }) => {
   }
 
   const navigateToYouTubeMovies = async (item, key) => {
-    console.log(item.title)
-    console.log(item.overview)
     const response = await fetch(`https://api.themoviedb.org/3/movie/${item.id}/videos?api_key=${API_KEY}`);
     const data = await response.json();
     const trailers = data.results.filter((result) => result.type === "Trailer");
     // console.log(trailers)
+    console.log(item)
+
     const videoUrl = `https://www.youtube.com/watch?v=${trailers[0].key}`;
 
     setVideoUrl(videoUrl);
+    setSelectedItem(item);
     setShowVideoPlayer(true);
   };
 
   const navigateToYouTubeSeries = async (item, key) => {
     const response = await fetch(`https://api.themoviedb.org/3/tv/${item.id}/videos?api_key=${API_KEY}`);
     const data = await response.json();
-    // console.log(data)
+    console.log(item)
     const trailers = data.results.filter((result) => result.type === "Trailer");
     const videoUrl = `https://www.youtube.com/watch?v=${trailers[0].key}`;
 
     setVideoUrl(videoUrl);
+    setSelectedItem(item);
     setShowVideoPlayer(true);
   };
 
@@ -86,15 +85,22 @@ export default ({ title, items, slug }) => {
                 </div>
               );
             }
-            return null;
           })}
         </div>
       </div>
-      {showVideoPlayer && (
+      {showVideoPlayer && selectedItem && (
         <div className="player-wrapper">
           <div className="player-container">
             <button className="close-button" onClick={() => setShowVideoPlayer(false)}><CloseIcon/></button>
-            <Player url={videoUrl} />
+            <Player url={videoUrl}/>
+            <div className="movies-infos">
+              <div className="header">
+                <h1>{selectedItem.title || selectedItem.name}</h1>
+                <span>{new Date(selectedItem.first_air_date).getFullYear() || new Date(selectedItem.release_date).getFullYear()}</span>
+              </div>
+              <span>{selectedItem.vote_average}</span>
+              <p>{selectedItem.overview}</p>
+            </div>
           </div>
         </div>
       )}
