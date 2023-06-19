@@ -8,7 +8,7 @@ const Player = ({ url }) => {
             playing = {true}
             controls={false}
             width= '100%'
-            volume={0.05}
+            volume={0.5}
         />
   );
 };
