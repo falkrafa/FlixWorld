@@ -57,6 +57,8 @@
   margin-right: 10px;
   opacity: 1;
   transition: all 200ms ease;
+  cursor: pointer;
+  border: none;
 }
 .button-1:hover,.button-2:hover{
   opacity: 0.7;

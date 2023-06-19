@@ -11,25 +11,45 @@ const API_BASE = "https://api.themoviedb.org/3";
 const basicFetch = async (endpoint) => {
   const req = await fetch(`${API_BASE}${endpoint}`);
   const json = await req.json();
+  // console.log(json)
   return json;
 }
 export default {
   getHomeList: async () => {
+    const totalPages = 3;
+
+    const originalList = [];
+    const trendingList = [];
+    const topList = [];
+    for (let page = 1; page <= totalPages; page++) {
+      const response = await basicFetch(
+        `/discover/tv?with_networks=213&language=pt-BR&page=${page}&api_key=${API_KEY}`
+      );
+      originalList.push(...response.results);
+      const responseTrendings = await basicFetch(
+        `/trending/all/week?language=ptBR&page=${page}&api_key=${API_KEY}`
+      );
+      trendingList.push(...responseTrendings.results);
+      const responseTop = await basicFetch(
+        `/movie/top_rated?language=pt-BR&page=${page}&api_key=${API_KEY}`
+      );
+      topList.push(...responseTop.results);
+    }
     return [
       {
         slug:'originals',
         title:'Netflix Originals',
-        items: await basicFetch(`/discover/tv?with_networks=213&language=pt-BR&api_key=${API_KEY}`) 
+        items: {results: originalList},
       },
       {
         slug:'trendings',
         title:'Trendings',
-        items: await basicFetch(`/trending/all/week?language=ptBR&api_key=${API_KEY}`)
+        items: {results: trendingList},
       },
       {
         slug:'toprated',
         title:'Top Rated',
-        items: await basicFetch(`/movie/top_rated?language=pt-BR&api_key=${API_KEY}`)
+        items: {results: topList}
       },
       {
         slug:'action',
@@ -39,7 +59,7 @@ export default {
       {
         slug:'comedy',
         title:'Comedy',
-        items: await basicFetch(`/discover/movie?with_genres=35&language=pt-BR&api_key=${API_KEY}`)
+        items: await basicFetch(`/discover/movie?with_genres=35&include_video=true&language=pt-BR&api_key=${API_KEY}`)
       },
       {
         slug:'horror',
@@ -52,9 +72,9 @@ export default {
         items: await basicFetch(`/discover/movie?with_genres=10749&language=pt-BR&api_key=${API_KEY}`)
       },
       {
-        slug:'documentary',
-        title:'Documentary',
-        items: await basicFetch(`/discover/movie?with_genres=99&language=pt-BR&api_key=${API_KEY}`)
+        slug:'upcoming',
+        title:'Up coming movies',
+        items: await basicFetch(`/movie/upcoming?language=pt-BR&api_key=${API_KEY}`)
       },
     ];
   },
@@ -76,5 +96,5 @@ export default {
       }
     }
     return info;
-  }
+  },
 }

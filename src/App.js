@@ -14,8 +14,8 @@ export default () => {
   useEffect(()=>{
     const loadAll = async () =>{
       let list = await API.getHomeList();
-      setMovieList(list);
-
+      setMovieList(list)
+      // console.log(list)
       // getting featured movie 
       let originals = list.filter(i=>i.slug === 'originals');
       let randomOriginals = Math.floor(Math.random()*(originals[0].items.results.length-1));
@@ -49,7 +49,7 @@ export default () => {
       }
       <section className="lists">
         {movielist.map((item,key)=>(
-          <MovieRow key={key} title ={item.title} items={item.items}/>
+          <MovieRow key={key} title ={item.title} items={item.items} slug = {item.slug}/>
         ))}
       </section>
       <footer>
