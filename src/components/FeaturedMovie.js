@@ -17,7 +17,8 @@ export default ({item}) => {
     description = description.substring(0,200)+"..."
   }
   const getFeaturedTrailer = async (item)=>{
-    const response = await fetch(`http://api.themoviedb.org/3/tv/${item.id}/videos?api_key=${API_KEY}`)
+    console.log(item);
+    const response = await fetch(`https://api.themoviedb.org/3/tv/${item.id}/videos?api_key=${API_KEY}`)
     const data = await response.json();
     const featuredTrailer = await data.results.filter((result)=>result.type === "Trailer");
     window.open(`https://www.youtube.com/watch?v=${featuredTrailer[0].key}`);

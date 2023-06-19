@@ -35,7 +35,7 @@ export default ({ title, items, slug }) => {
   const navigateToYouTubeMovies = async (item, key) => {
     console.log(item.title)
     console.log(item.overview)
-    const response = await fetch(`http://api.themoviedb.org/3/movie/${item.id}/videos?api_key=${API_KEY}`);
+    const response = await fetch(`https://api.themoviedb.org/3/movie/${item.id}/videos?api_key=${API_KEY}`);
     const data = await response.json();
     const trailers = data.results.filter((result) => result.type === "Trailer");
     // console.log(trailers)
@@ -46,7 +46,7 @@ export default ({ title, items, slug }) => {
   };
 
   const navigateToYouTubeSeries = async (item, key) => {
-    const response = await fetch(`http://api.themoviedb.org/3/tv/${item.id}/videos?api_key=${API_KEY}`);
+    const response = await fetch(`https://api.themoviedb.org/3/tv/${item.id}/videos?api_key=${API_KEY}`);
     const data = await response.json();
     // console.log(data)
     const trailers = data.results.filter((result) => result.type === "Trailer");
