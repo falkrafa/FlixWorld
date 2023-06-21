@@ -27,7 +27,7 @@ export default {
       );
       originalList.push(...response.results);
       const responseTrendings = await basicFetch(
-        `/trending/all/week?language=ptBR&page=${page}&api_key=${API_KEY}`
+        `/trending/all/week?language=pt-BR&page=${page}&api_key=${API_KEY}`
       );
       trendingList.push(...responseTrendings.results);
       const responseTop = await basicFetch(

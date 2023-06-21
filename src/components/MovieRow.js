@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import "./MovieRow.css";
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
@@ -11,6 +11,15 @@ export default ({ title, items, slug }) => {
   const [showVideoPlayer, setShowVideoPlayer] = useState(false);
   const [videoUrl, setVideoUrl] = useState('');
   const [selectedItem, setSelectedItem] = useState(null);
+
+  useEffect(() => {
+    if (showVideoPlayer) {
+      document.documentElement.classList.add("hide-scroll");
+    } else {
+      document.documentElement.classList.remove("hide-scroll");
+    }
+  }, [showVideoPlayer]);
+  
   const handleLeftArrow = () => {
     let x = scrollX + Math.round(window.innerWidth / 2);
     if (x > 0) {
@@ -34,7 +43,7 @@ export default ({ title, items, slug }) => {
     const data = await response.json();
     const trailers = data.results.filter((result) => result.type === "Trailer");
     // console.log(trailers)
-    console.log(item)
+    // console.log(item)
 
     const videoUrl = `https://www.youtube.com/watch?v=${trailers[0].key}`;
 
@@ -49,6 +58,7 @@ export default ({ title, items, slug }) => {
     console.log(item)
     const trailers = data.results.filter((result) => result.type === "Trailer");
     const videoUrl = `https://www.youtube.com/watch?v=${trailers[0].key}`;
+    // console.log(trailers)
 
     setVideoUrl(videoUrl);
     setSelectedItem(item);
@@ -91,15 +101,17 @@ export default ({ title, items, slug }) => {
       {showVideoPlayer && selectedItem && (
         <div className="player-wrapper">
           <div className="player-container">
-            <button className="close-button" onClick={() => setShowVideoPlayer(false)}><CloseIcon/></button>
-            <Player url={videoUrl}/>
+            <div className="player-container-video">
+              <button className="close-button" onClick={() => setShowVideoPlayer(false)}><CloseIcon/></button>
+              <Player url={videoUrl}/>
+            </div>
             <div className="movies-infos">
-              <div className="header">
-                <h1>{selectedItem.title || selectedItem.name}</h1>
-                <span>{new Date(selectedItem.first_air_date).getFullYear() || new Date(selectedItem.release_date).getFullYear()}</span>
+              <div className="item-name">{selectedItem.title || selectedItem.name}</div>
+              <div className="item-details">
+                <div className="item-year">{new Date(selectedItem.first_air_date).getFullYear() || new Date(selectedItem.release_date).getFullYear()}</div>
+                <div className="item-average">{selectedItem.vote_average} pontos</div>
               </div>
-              <span>{selectedItem.vote_average}</span>
-              <p>{selectedItem.overview}</p>
+              <div className="item-overview">{selectedItem.overview}</div>
             </div>
           </div>
         </div>
