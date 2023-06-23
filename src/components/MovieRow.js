@@ -11,6 +11,7 @@ export default ({ title, items, slug }) => {
   const [showVideoPlayer, setShowVideoPlayer] = useState(false);
   const [videoUrl, setVideoUrl] = useState('');
   const [selectedItem, setSelectedItem] = useState(null);
+  const [providers, setProviders] = useState();
 
   useEffect(() => {
     if (showVideoPlayer) {
@@ -19,6 +20,26 @@ export default ({ title, items, slug }) => {
       document.documentElement.classList.remove("hide-scroll");
     }
   }, [showVideoPlayer]);
+
+  useEffect(() => {
+    const fetchProviders = async () => {
+      let url;
+      if (slug === "originals" || selectedItem.media_type === 'tv') {
+        url = `https://api.themoviedb.org/3/tv/${selectedItem.id}/watch/providers?locale=BR&api_key=${API_KEY}`;
+      } else if(slug !== "originals" || selectedItem.media_type === 'movie'){
+        url = `https://api.themoviedb.org/3/movie/${selectedItem.id}/watch/providers?locale=BR&api_key=${API_KEY}`;
+      }
+
+      const response = await fetch(url);
+      const providersData = await response.json();
+      setProviders(providersData)      
+      console.log(providersData.results.BR)
+    };
+
+    if (selectedItem) {
+      fetchProviders();
+    }
+  }, [selectedItem, slug]);
   
   const handleLeftArrow = () => {
     let x = scrollX + Math.round(window.innerWidth / 2);
@@ -43,7 +64,7 @@ export default ({ title, items, slug }) => {
     const data = await response.json();
     const trailers = data.results.filter((result) => result.type === "Trailer");
     // console.log(trailers)
-    // console.log(item)
+    console.log(item)
 
     const videoUrl = `https://www.youtube.com/watch?v=${trailers[0].key}`;
 
@@ -112,6 +133,32 @@ export default ({ title, items, slug }) => {
                 <div className="item-average">{selectedItem.vote_average} pontos</div>
               </div>
               <div className="item-overview">{selectedItem.overview}</div>
+              <div className="providers-container">
+                <div className="providers-list">
+                  <strong>Stream: </strong>
+                  <ul>
+                    {providers && providers.results && providers.results.BR && providers.results.BR.flatrate? providers.results.BR.flatrate.map((provider, index) => {
+                      return <li><img src={`https://image.tmdb.org/t/p/w300${provider.logo_path}`}></img>{provider.provider_name}</li>
+                    }): "Nao disponivel"}
+                  </ul>
+                </div>
+                <div className="providers-list">
+                  <strong>Comprar: </strong>
+                  <ul>
+                    {providers && providers.results && providers.results.BR && providers.results.BR.buy? providers.results.BR.buy.map((provider, index) => {
+                      return <li><img src={`https://image.tmdb.org/t/p/w300${provider.logo_path}`}></img>{provider.provider_name}</li>
+                    }): "Nao disponivel"}
+                  </ul>
+                </div>
+                <div className="providers-list">
+                  <strong>Alugar: </strong>
+                  <ul>
+                    {providers && providers.results && providers.results.BR && providers.results.BR.rent? providers.results.BR.rent.map((provider, index) => {
+                      return <li><img src={`https://image.tmdb.org/t/p/w300${provider.logo_path}`}></img>{provider.provider_name}</li>
+                    }): "Nao disponivel"}
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
         </div>

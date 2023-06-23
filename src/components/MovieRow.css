@@ -66,7 +66,7 @@
   display: flex;
   flex-direction: column;
   width: 50%;
-  height: 85%;
+  height: 90%;
   background-color: rgba(0, 0, 0, 1);
   border-radius: 10px;
   position: relative;
@@ -147,6 +147,13 @@
 }
 .hide-scroll {
   overflow: hidden;
+}
+.provider-container{
+  background-color: aqua;
+}
+.providers-list img{
+  border-radius: 10px;
+  width: 50px;
 }
 @media (max-width: 760px){
   .movieRow-left,
