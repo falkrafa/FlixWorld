@@ -1,40 +1,20 @@
 import React from "react";
-import './Player.css';
-import Plyr from "plyr-react";
-import "plyr/dist/plyr.css";
+import "./MovieRow.css"
+import ReactPlayer from 'react-player/youtube';
 
 const Player = ({ url }) => {
-  console.log(url)
-  const videoSrc = {
-    type: "video",
-    sources: [
-      {
-        src: url,
-        provider: "youtube",
-      }
-    ],
-  };
-
   return (
-    <Plyr options={{
-      controls: [
-        // "play-large",
-        "play",
-        // "rewind",
-        // "fast-forward",
-        "progress",
-        "current-time",
-        "mute",
-        "volume",
-        "captions",
-        // "settings",
-        // "pip",
-        "fullscreen"
-      ],
-      captions: { active: true, language: "auto", update: true },
-      previewThumbnails: { enabled: false, src: "" },
-      autoplay: true,
-    }} source={videoSrc}/>
+    <ReactPlayer
+      classname='teste'
+      url={url}
+      width='100%'
+      height='55vh'
+      config={{
+        youtube: {
+          playerVars: {controls: 1, autoplay: true, fs:0,iv_load_policy:3,modestbranding:1,rel:0}
+        }
+      }}
+    />
   );
 };
 
