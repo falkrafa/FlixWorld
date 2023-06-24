@@ -10,7 +10,7 @@ export default ({ title, items, slug }) => {
   const [scrollX, setScrollX] = useState(-400);
   const [showVideoPlayer, setShowVideoPlayer] = useState(false);
   const [videoUrl, setVideoUrl] = useState('');
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedItem, setSelectedItem] = useState('');
   const [providers, setProviders] = useState();
 
   useEffect(() => {
@@ -22,21 +22,21 @@ export default ({ title, items, slug }) => {
   }, [showVideoPlayer]);
 
   useEffect(() => {
-    const fetchProviders = async () => {
-      let url;
-      if (slug === "originals" || selectedItem.media_type === 'tv') {
-        url = `https://api.themoviedb.org/3/tv/${selectedItem.id}/watch/providers?locale=BR&api_key=${API_KEY}`;
-      } else if(slug !== "originals" || selectedItem.media_type === 'movie'){
-        url = `https://api.themoviedb.org/3/movie/${selectedItem.id}/watch/providers?locale=BR&api_key=${API_KEY}`;
-      }
-
-      const response = await fetch(url);
-      const providersData = await response.json();
-      setProviders(providersData)      
-      console.log(providersData.results.BR)
-    };
-
     if (selectedItem) {
+      const fetchProviders = async () => {
+        let url;
+        if (slug === "originals" || selectedItem.media_type === 'tv') {
+          url = `https://api.themoviedb.org/3/tv/${selectedItem.id}/watch/providers?locale=BR&api_key=${API_KEY}`;
+        } else if(slug !== "originals" || selectedItem.media_type === 'movie'){
+          url = `https://api.themoviedb.org/3/movie/${selectedItem.id}/watch/providers?locale=BR&api_key=${API_KEY}`;
+        }
+  
+        const response = await fetch(url);
+        const providersData = await response.json();
+        setProviders(providersData);
+        console.log(providersData.results.BR);
+      };
+  
       fetchProviders();
     }
   }, [selectedItem, slug]);
@@ -65,7 +65,6 @@ export default ({ title, items, slug }) => {
     const trailers = data.results.filter((result) => result.type === "Trailer");
     // console.log(trailers)
     console.log(item)
-
     const videoUrl = `https://www.youtube.com/watch?v=${trailers[0].key}`;
 
     setVideoUrl(videoUrl);

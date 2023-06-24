@@ -4,6 +4,7 @@ import Plyr from "plyr-react";
 import "plyr/dist/plyr.css";
 
 const Player = ({ url }) => {
+  console.log(url)
   const videoSrc = {
     type: "video",
     sources: [
