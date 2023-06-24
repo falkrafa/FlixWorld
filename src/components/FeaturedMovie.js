@@ -1,8 +1,19 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./FeaturedMovie.css";
+import "./MovieRow.css";
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import Player from "./videoPlayer";
 const API_KEY = "bbd9548ca40094e1de167abba96ec747";
 export default ({item}) => {
+  const [showVideoPlayer, setShowVideoPlayer] = useState(false);
+  const [videoUrl, setVideoUrl] = useState('');
+  useEffect(() => {
+    if (showVideoPlayer) {
+      document.documentElement.classList.add("hide-scroll");
+    } else {
+      document.documentElement.classList.remove("hide-scroll");
+    }
+  }, [showVideoPlayer]);
 
   let firstDate = new Date(item.first_air_date)
   let genres = [];
@@ -17,11 +28,19 @@ export default ({item}) => {
     description = description.substring(0,200)+"..."
   }
   const getFeaturedTrailer = async (item)=>{
-    console.log(item);
     const response = await fetch(`https://api.themoviedb.org/3/tv/${item.id}/videos?api_key=${API_KEY}`)
     const data = await response.json();
     const featuredTrailer = await data.results.filter((result)=>result.type === "Trailer");
-    window.open(`https://www.youtube.com/watch?v=${featuredTrailer[0].key}`);
+    if (featuredTrailer.length > 0) {
+      const videoUrl = `https://www.youtube.com/watch?v=${featuredTrailer[0].key}`;
+      setVideoUrl(videoUrl);
+    } else {
+      setVideoUrl('');
+    }
+    setShowVideoPlayer(true)
+  }
+  const handleToggle = ()=>{
+    setShowVideoPlayer(false)
   }
   return (
     <section className="featured" style={{
@@ -47,6 +66,13 @@ export default ({item}) => {
           </div>
         </div>
       </div>
+      {showVideoPlayer && videoUrl && (
+        <div className="player-wrapper" onClick={handleToggle}>
+          <div className="teste">
+            <Player url={videoUrl} />
+          </div>
+        </div>
+      )}
     </section>
   );
 }

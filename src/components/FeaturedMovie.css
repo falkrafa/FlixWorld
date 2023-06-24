@@ -76,7 +76,10 @@
   font-size: 18px;
   color: #999;
 }
-
+.teste{
+  width: 50%;
+  height: 50%;
+}
 @media(max-width:760px){
   .featured{
     height: 90vh;
