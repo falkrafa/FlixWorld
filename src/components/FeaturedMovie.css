@@ -77,6 +77,9 @@
   color: #999;
 }
 .teste{
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 50%;
   height: 50%;
 }
@@ -100,5 +103,8 @@
   }
   .featured-genres{
     font-size: 14px;
+  }
+  .teste{
+    width: 100%;
   }
 }
