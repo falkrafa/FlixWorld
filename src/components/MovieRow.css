@@ -16,6 +16,27 @@
   display: inline-block;
   width: 150px;
 }
+.teste2{
+  width: 100%;
+}
+.cast-list {
+  overflow-x: hidden;
+  display: flex;
+  flex-wrap: nowrap;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+.item-cast {
+  width: 150px;
+  height: 225px;
+  margin-right: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  color: white;
+  flex-shrink: 0;
+}
 .movieRow-item img{
   width: 100%;
   transform: scale(0.9);
@@ -66,7 +87,7 @@
   display: flex;
   flex-direction: column;
   width: 50%;
-  height: 90%;
+  height: 95%;
   background-color: rgba(0, 0, 0, 1);
   border-radius: 10px;
   position: relative;
@@ -97,8 +118,10 @@
   position: sticky;
   top: 0;
 }
-.player-container-video .video-image {
+.video-image{
+  background-color: rgba(0, 0, 0, 1);
   flex: 1;
+  position: sticky;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -169,6 +192,19 @@
   font-size: 18px;
   color: #999;
   max-width: 80%;
+}
+.item-genres{
+  margin-top: 15px;
+  /* font-size: 18px; */
+  color: #999;
+}
+.item-season{
+  color: lightblue;
+  font-size: 15px;
+  margin: 0px 0px 10px 0px;
+}
+.item-season strong{
+  color: #c4c4c4;
 }
 .ver-mais-button{
   width: fit-content;
