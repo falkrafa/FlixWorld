@@ -43,9 +43,9 @@ export default ({ title, items, slug }) => {
       const fetchDetails = async () => {
         let url;
         if (slug === "originals" || selectedItem.media_type === 'tv') {
-          url = `https://api.themoviedb.org/3/tv/${selectedItem.id}?language=pt-BR&api_key=${API_KEY}`;
+          url = `https://api.themoviedb.org/3/tv/${selectedItem.id}?api_key=${API_KEY}`;
         } else if (slug !== "originals" || selectedItem.media_type === 'movie') {
-          url = `https://api.themoviedb.org/3/movie/${selectedItem.id}?language=pt-BR&api_key=${API_KEY}`;
+          url = `https://api.themoviedb.org/3/movie/${selectedItem.id}?api_key=${API_KEY}`;
         }
 
         const response = await fetch(url);
@@ -106,7 +106,9 @@ export default ({ title, items, slug }) => {
     setScrollX(x);
   };
 
-
+  useEffect(() => {
+    setScrollX2(0);
+  }, [selectedItem]);
   const handleCastLeft = () => {
     let x2 = scrollX2 + Math.round(document.querySelector('.teste2').offsetWidth / 2);
   
@@ -204,15 +206,20 @@ export default ({ title, items, slug }) => {
                 <Player url={videoUrl} />
               ) : (
                 <div className="video-image">
-                  <img src={`https://image.tmdb.org/t/p/w300${selectedItem.poster_path}`} alt={selectedItem.title || selectedItem.name} />
+                  <img src={`https://image.tmdb.org/t/p/original${selectedItem.backdrop_path}`} alt={selectedItem.title || selectedItem.name} />
                 </div>
               )}
             </div>
             <div className="movies-infos">
               <div className="item-name">{selectedItem.title || selectedItem.name}</div>
               <div className="item-details">
+                {Details.runtime ? <div className="item-year">
+                  {Math.floor(Details.runtime / 60)}h{" "}
+                  {String(Details.runtime % 60).padStart(2, "0")}min
+                </div> :null}
+                {Details.number_of_seasons ? <div className="item-year">{Details.number_of_seasons} season{Details.number_of_seasons !== 1? 's': ''}</div>:null}
                 <div className="item-year">{new Date(selectedItem.first_air_date).getFullYear() || new Date(selectedItem.release_date).getFullYear()}</div>
-                <div className="item-average">{selectedItem.vote_average.toFixed(1)} pontos</div>
+                <div className="item-average">{selectedItem.vote_average.toFixed(1)*10}%</div>
               </div>
               <div className="item-overview">
                 {selectedItem.overview && (showFullOverview ? selectedItem.overview : `${selectedItem.overview.substring(0, 320)}`)}
@@ -221,34 +228,52 @@ export default ({ title, items, slug }) => {
                   className="ver-mais-button"
                   onClick={handleToggleOverview}
                   >
-                    {showFullOverview ? "Ver menos" : "Ver mais"}
+                    {showFullOverview ? "Read less" : "Read more"}
                   </button>
                 )}
               </div>
-              <div className="item-genres"><strong>Generos: </strong>{Details.genres.map((details) => {return details.name;}).join(", ")}</div>
+              <div className="item-genres"><strong>Genres: </strong>{Details.genres.map((details) => {return details.name;}).join(", ")}</div>
 
-              {Details.number_of_seasons &&(
+
+              {Details &&(
                 <>
-                <h1>Informações adicionais</h1>
-                <div className="item-season"><strong>Quantidade de Temporadas:</strong> {Details.number_of_seasons}</div>
-                <div className="item-season"><strong>Quantidade de episódios:</strong> {Details.number_of_episodes}</div>
-                {Details.last_episode_to_air ? <div className="item-season"><strong>Data do ultimo episódio lançado:</strong> {new Date(Details.last_episode_to_air.air_date).toLocaleDateString("pt-BR")}</div> : null}
-                {Details.next_episode_to_air ? <div className="item-season"><strong>Data do próximo episódio:</strong> {new Date(Details.next_episode_to_air.air_date).toLocaleDateString("pt-BR")}</div> : null}
+                <h1 className="header-details">Details</h1>
+                {Details.number_of_episodes? <div className="item-season"><strong>Total of episodes:</strong> {Details.number_of_episodes}</div>:null}
+                {Details.last_episode_to_air ? <div className="item-season"><strong>Date of the last released episode:</strong> {new Date(Details.last_episode_to_air.air_date).toLocaleDateString("pt-BR")}</div> : null}
+                {Details.next_episode_to_air ? <div className="item-season"><strong>Date of the next episode:</strong> {new Date(Details.next_episode_to_air.air_date).toLocaleDateString("pt-BR")}</div> : null}
+                {Details.budget ? <div className="item-season"><strong>Budget:</strong> {Details.budget.toLocaleString('en-US')}</div> : null}
+                {Details.revenue ? <div className="item-season"><strong>Revenue:</strong> {Details.revenue.toLocaleString('en-US')}</div> : null}
+                {Details.production_countries ? <div className="item-season"><strong>Production countrie{Details.production_countries.length > 1 ? 's:' : ':'}</strong> {Details.production_countries.map((countries)=>{
+                  return countries.name
+                }).join(', ')}</div>:null}
+
+                {Cast.crew.filter((crew)=>{
+                  return crew.job === "Producer"
+                }).length > 0 ? <div className="item-season"><strong>Producer:</strong> {Cast.crew.filter((crew)=>{
+                  return crew.job === "Producer"
+                }).map((producer)=>{return producer.name}).join(", ")}</div>:null}
+
+                {Cast.crew.filter((crew) => crew.job === "Director").length > 0 ? (
+                  <div className="item-season">
+                    <strong>Director:</strong>{" "}
+                    {Cast.crew
+                      .filter((crew) => crew.job === "Director")
+                      .map((director) => director.name)
+                      .join(", ")}
+                  </div>
+                ) : Cast.crew.filter((crew) => crew.job === "Executive Producer").length > 0 ? (
+                  <div className="item-season">
+                    <strong>Executive Producer:</strong>{" "}
+                    {Cast.crew
+                      .filter((crew) => crew.job === "Executive Producer")
+                      .map((executiveProducer) => executiveProducer.name)
+                      .join(", ")}
+                  </div>
+                ) : null}
                 </>
+                
               )}
-              {Details.runtime &&(
-                <>
-                <h1>Informações adicionais</h1>
-                {Details.revenue ? <div className="item-season"><strong>Bilheteria:</strong> {Details.revenue.toLocaleString('pt-BR')}</div> : null}
-                <div className="item-season">
-                  <strong>
-                    Duração:</strong> {Math.floor(Details.runtime / 60)}h{" "}
-                    {String(Details.runtime % 60).padStart(2, "0")}min
-                  
-                </div>
-                </>
-              )}
-              {Cast.cast.length > 0 ? <h1>Cast</h1> : null}
+              {Cast.cast.length > 0 ? <h1 className="header-details">Cast</h1> : null}
               {Cast.cast.length > 0 ? (
                 <div className="teste2">
                   <div className="cast-list" style={{marginLeft: scrollX2,width: 'fit-content' }}>
@@ -277,29 +302,29 @@ export default ({ title, items, slug }) => {
                 </div>
               ) : null}
               <div className="providers-container">
-                <h1>Onde Assistir</h1>
+                <h1 className="header-details">Where to watch</h1>
                 <div className="providers-list">
-                  <strong>Stream: </strong>
+                  <strong>Subscription: </strong>
                   <ul>
                     {providers && providers.results && providers.results.BR && providers.results.BR.flatrate ? providers.results.BR.flatrate.map((provider, index) => {
                       return <li><img src={`https://image.tmdb.org/t/p/w300${provider.logo_path}`}></img></li>
-                    }) : <li>Nao disponivel</li>}
+                    }) : <li>Not available</li>}
                   </ul>
                 </div>
                 <div className="providers-list">
-                  <strong>Comprar: </strong>
+                  <strong>Buy: </strong>
                   <ul>
                     {providers && providers.results && providers.results.BR && providers.results.BR.buy ? providers.results.BR.buy.map((provider, index) => {
                       return <li><img src={`https://image.tmdb.org/t/p/w300${provider.logo_path}`}></img></li>
-                    }) : <li>Nao disponivel</li>}
+                    }) : <li>Not available</li>}
                   </ul>
                 </div>
                 <div className="providers-list">
-                  <strong>Alugar: </strong>
+                  <strong>Rent: </strong>
                   <ul>
                     {providers && providers.results && providers.results.BR && providers.results.BR.rent ? providers.results.BR.rent.map((provider, index) => {
                       return <li><img src={`https://image.tmdb.org/t/p/w300${provider.logo_path}`}></img></li>
-                    }) : <li>Nao disponivel</li>}
+                    }) : <li>Not available</li>}
                   </ul>
                 </div>
               </div>

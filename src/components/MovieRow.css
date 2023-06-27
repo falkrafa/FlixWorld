@@ -17,9 +17,11 @@
   width: 150px;
 }
 .teste2{
+  overflow: hidden;
   width: 100%;
 }
 .cast-list {
+  transition: all ease 0.5s;
   overflow-x: hidden;
   display: flex;
   flex-wrap: nowrap;
@@ -172,7 +174,7 @@
 }
 .item-details{
   margin-bottom: 10px;
-  width: 148px;
+  width: 170px;
   display: flex;
   flex-direction: row-reverse;
   justify-content: space-between;
@@ -199,19 +201,21 @@
   color: #999;
 }
 .item-season{
-  color: lightblue;
+  /* font-weight:500 ; */
+  color: lightseagreen;
   font-size: 15px;
   margin: 0px 0px 10px 0px;
 }
 .item-season strong{
-  color: #c4c4c4;
+  font-weight: bold;
+  color: white;
 }
 .ver-mais-button{
   width: fit-content;
   height: fit-content;
   font-size: 15px;
   cursor: pointer;
-  color: white;
+  color: lightcyan;
   border: none;
   background: none;
 }
@@ -246,6 +250,11 @@
   border-radius: 10px;
   width: 50px;
   height: 50px;
+}
+.header-details{
+
+  border-left: 3px solid red;
+  padding-left: 5px;
 }
 @media (max-width: 768px){
   .movieRow-left,
