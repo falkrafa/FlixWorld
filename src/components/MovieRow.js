@@ -4,7 +4,7 @@ import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import CloseIcon from '@mui/icons-material/Close';
 import Player from "./videoPlayer";
-
+import { useMediaQuery } from '@mui/material';
 const API_KEY = "bbd9548ca40094e1de167abba96ec747";
 
 export default ({ title, items, slug }) => {
@@ -17,6 +17,12 @@ export default ({ title, items, slug }) => {
   const [showFullOverview, setShowFullOverview] = useState(false);
   const [Details, setDetails] = useState(false);
   const [Cast, setCast] = useState(false);
+  const [isMobileView, setIsMobileView] = useState(false);
+  const isMobile = useMediaQuery('(max-width: 768px)');
+
+  useEffect(() => {
+    setIsMobileView(isMobile);
+  }, [isMobile]);
 
   useEffect(() => {
     if (showVideoPlayer) {
@@ -168,13 +174,16 @@ export default ({ title, items, slug }) => {
     <div className="movieRow">
       <h2>{title}</h2>
 
-      <div className="movieRow-left" onClick={handleLeftArrow}>
-        <NavigateBeforeIcon style={{ fontSize: 50 }} />
-      </div>
-      <div className="movieRow-right" onClick={handleRightArrow}>
-        <NavigateNextIcon style={{ fontSize: 50 }} />
-      </div>
-
+      {!isMobileView && (
+        <div className="movieRow-left" onClick={handleLeftArrow}>
+          <NavigateBeforeIcon style={{ fontSize: 50 }} />
+        </div>
+      )}
+      {!isMobileView && (
+        <div className="movieRow-right" onClick={handleRightArrow}>
+          <NavigateNextIcon style={{ fontSize: 50 }} />
+        </div>
+      )}
       <div className="movieRow-area">
         <div className="movieRow-list" style={{
           marginLeft: scrollX,
@@ -201,7 +210,7 @@ export default ({ title, items, slug }) => {
         <div className="player-wrapper">
           <div className="player-container">
             <div className="player-container-video">
-              <button className="close-button" onClick={() => setShowVideoPlayer(false)}><CloseIcon /></button>
+              <button className="close-button" onClick={() => {setShowVideoPlayer(false);setSelectedItem('')}}><CloseIcon /></button>
               {videoUrl ? (
                 <Player url={videoUrl} />
               ) : (
@@ -239,6 +248,8 @@ export default ({ title, items, slug }) => {
                 <>
                 <h1 className="header-details">Details</h1>
                 {Details.number_of_episodes? <div className="item-season"><strong>Total of episodes:</strong> {Details.number_of_episodes}</div>:null}
+                {Details.release_date? <div className="item-season"><strong>Release date:</strong> {new Date(Details.release_date).toLocaleDateString("pt-BR")}</div>:null}
+                {Details.first_air_date? <div className="item-season"><strong>Release date:</strong> {new Date(Details.first_air_date).toLocaleDateString("pt-BR")}</div>:null}
                 {Details.last_episode_to_air ? <div className="item-season"><strong>Date of the last released episode:</strong> {new Date(Details.last_episode_to_air.air_date).toLocaleDateString("pt-BR")}</div> : null}
                 {Details.next_episode_to_air ? <div className="item-season"><strong>Date of the next episode:</strong> {new Date(Details.next_episode_to_air.air_date).toLocaleDateString("pt-BR")}</div> : null}
                 {Details.budget ? <div className="item-season"><strong>Budget:</strong> {Details.budget.toLocaleString('en-US')}</div> : null}
@@ -277,12 +288,16 @@ export default ({ title, items, slug }) => {
               {Cast.cast.length > 0 ? (
                 <div className="teste2">
                   <div className="cast-list" style={{marginLeft: scrollX2,width: 'fit-content' }}>
-                    <div className="movieRow-left" onClick={handleCastLeft}>
-                      <NavigateBeforeIcon style={{ fontSize: 50 }} />
-                    </div>
-                    <div className="movieRow-right" onClick={handleCastRight}>
-                      <NavigateNextIcon style={{ fontSize: 50 }} />
-                    </div>
+                    {!isMobileView && (
+                      <div className="movieRow-left" onClick={handleCastLeft}>
+                        <NavigateBeforeIcon style={{ fontSize: 50 }} />
+                      </div>
+                    )}
+                    {!isMobileView && (
+                      <div className="movieRow-right" onClick={handleCastRight}>
+                        <NavigateNextIcon style={{ fontSize: 50 }} />
+                      </div>
+                    )}
                     {Cast.cast.length > 0 &&
                       Cast.cast.map((cast) => {
                         const backgroundImageStyle = {
