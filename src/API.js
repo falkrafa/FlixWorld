@@ -23,15 +23,15 @@ export default {
     const topList = [];
     for (let page = 1; page <= totalPages; page++) {
       const response = await basicFetch(
-        `/discover/tv?with_networks=213&page=${page}&api_key=${API_KEY}`
+        `/discover/tv?with_networks=213&language=pt-BR&page=${page}&api_key=${API_KEY}`
       );
       originalList.push(...response.results);
       const responseTrendings = await basicFetch(
-        `/trending/all/week?page=${page}&api_key=${API_KEY}`
+        `/trending/all/week?language=pt-BR&page=${page}&api_key=${API_KEY}`
       );
       trendingList.push(...responseTrendings.results);
       const responseTop = await basicFetch(
-        `/movie/top_rated?page=${page}&api_key=${API_KEY}`
+        `/movie/top_rated?language=pt-BR&page=${page}&api_key=${API_KEY}`
       );
       topList.push(...responseTop.results);
     }
@@ -54,27 +54,27 @@ export default {
       {
         slug:'action',
         title:'Action',
-        items: await basicFetch(`/discover/movie?with_genres=28&api_key=${API_KEY}`)
+        items: await basicFetch(`/discover/movie?language=pt-BR&with_genres=28&api_key=${API_KEY}`)
       },
       {
         slug:'comedy',
         title:'Comedy',
-        items: await basicFetch(`/discover/movie?with_genres=35&include_video=true&api_key=${API_KEY}`)
+        items: await basicFetch(`/discover/movie?language=pt-BR&with_genres=35&include_video=true&api_key=${API_KEY}`)
       },
       {
         slug:'horror',
         title:'Horror',
-        items: await basicFetch(`/discover/movie?with_genres=27&api_key=${API_KEY}`)
+        items: await basicFetch(`/discover/movie?language=pt-BR&with_genres=27&api_key=${API_KEY}`)
       },
       {
         slug:'romance',
         title:'Romance',
-        items: await basicFetch(`/discover/movie?with_genres=10749&api_key=${API_KEY}`)
+        items: await basicFetch(`/discover/movie?language=pt-BR&with_genres=10749&api_key=${API_KEY}`)
       },
       {
         slug:'upcoming',
         title:'Up coming movies',
-        items: await basicFetch(`/movie/upcoming?api_key=${API_KEY}`)
+        items: await basicFetch(`/movie/upcoming?language=pt-BR&api_key=${API_KEY}`)
       },
     ];
   },
@@ -84,11 +84,11 @@ export default {
     if(movieId){
       switch(type){
         case 'movie':
-          info = await basicFetch(`/movie/${movieId}?api_key=${API_KEY}`);
+          info = await basicFetch(`/movie/${movieId}?language=pt-BR&api_key=${API_KEY}`);
         break;
 
         case 'tv':
-          info = await basicFetch(`/tv/${movieId}?api_key=${API_KEY}`);
+          info = await basicFetch(`/tv/${movieId}?language=pt-BR&api_key=${API_KEY}`);
         break;
         default:
           info = null;

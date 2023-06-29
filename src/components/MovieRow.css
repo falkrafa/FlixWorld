@@ -1,3 +1,24 @@
+/* Largura da scrollbar */
+::-webkit-scrollbar {
+  width: 3px;
+}
+
+/* Cor do fundo da scrollbar */
+::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+
+/* Cor da alça da scrollbar */
+::-webkit-scrollbar-thumb {
+  background-color: #888;
+}
+
+/* Hover na alça da scrollbar */
+::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
+
 .movieRow{
   margin-bottom: 30px;
 }
@@ -7,14 +28,14 @@
 
 .movieRow-area{
   overflow-x: hidden;
-  padding-left: 30px;
+  padding-left: 20px;
 }
 .movieRow-list{
   transition: all ease 0.5s;
 }
 .movieRow-item{
   display: inline-block;
-  width: 150px;
+  width: 170px;
 }
 .teste2{
   overflow: hidden;
@@ -59,7 +80,7 @@
   justify-content: center;
   overflow: hidden;
   cursor: pointer;
-  opacity: 0;
+  opacity: 0.8;
   transition: all ease 0.5s;
 }
 .movieRow-left{
@@ -67,10 +88,6 @@
 }
 .movieRow-right{
   right: 0;
-}
-.movieRow:hover .movieRow-left,
-.movieRow:hover .movieRow-right{
-  opacity: 1;
 }
 .player-wrapper {
   position: fixed;
@@ -174,7 +191,7 @@
 }
 .item-details{
   margin-bottom: 10px;
-  width: 170px;
+  width: 195px;
   display: flex;
   flex-direction: row-reverse;
   justify-content: space-between;
@@ -256,7 +273,7 @@
   border-left: 3px solid red;
   padding-left: 5px;
 }
-@media (max-width: 768px){
+@media (max-width: 800px){
   .movieRow-left,
   .movieRow-right{
     opacity: 1;

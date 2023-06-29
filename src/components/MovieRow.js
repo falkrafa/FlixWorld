@@ -8,7 +8,7 @@ import { useMediaQuery } from '@mui/material';
 const API_KEY = "bbd9548ca40094e1de167abba96ec747";
 
 export default ({ title, items, slug }) => {
-  const [scrollX, setScrollX] = useState(-400);
+  const [scrollX, setScrollX] = useState(0);
   const [scrollX2, setScrollX2] = useState(0);
   const [showVideoPlayer, setShowVideoPlayer] = useState(false);
   const [videoUrl, setVideoUrl] = useState('');
@@ -18,7 +18,7 @@ export default ({ title, items, slug }) => {
   const [Details, setDetails] = useState(false);
   const [Cast, setCast] = useState(false);
   const [isMobileView, setIsMobileView] = useState(false);
-  const isMobile = useMediaQuery('(max-width: 768px)');
+  const isMobile = useMediaQuery('(max-width: 800px)');
 
   useEffect(() => {
     setIsMobileView(isMobile);
@@ -49,9 +49,9 @@ export default ({ title, items, slug }) => {
       const fetchDetails = async () => {
         let url;
         if (slug === "originals" || selectedItem.media_type === 'tv') {
-          url = `https://api.themoviedb.org/3/tv/${selectedItem.id}?api_key=${API_KEY}`;
+          url = `https://api.themoviedb.org/3/tv/${selectedItem.id}?language=pt-BR&api_key=${API_KEY}`;
         } else if (slug !== "originals" || selectedItem.media_type === 'movie') {
-          url = `https://api.themoviedb.org/3/movie/${selectedItem.id}?api_key=${API_KEY}`;
+          url = `https://api.themoviedb.org/3/movie/${selectedItem.id}?language=pt-BR&api_key=${API_KEY}`;
         }
 
         const response = await fetch(url);
@@ -174,7 +174,7 @@ export default ({ title, items, slug }) => {
     <div className="movieRow">
       <h2>{title}</h2>
 
-      {!isMobileView && (
+      {!isMobileView && scrollX !== 0 &&(
         <div className="movieRow-left" onClick={handleLeftArrow}>
           <NavigateBeforeIcon style={{ fontSize: 50 }} />
         </div>
@@ -187,7 +187,7 @@ export default ({ title, items, slug }) => {
       <div className="movieRow-area">
         <div className="movieRow-list" style={{
           marginLeft: scrollX,
-          width: items.results.length * 150
+          width: items.results.length * 170
         }}>
           {items.results.length > 0 && items.results.map((item, key) => {
             if (slug === "originals" || item.media_type === 'tv') {
@@ -226,7 +226,7 @@ export default ({ title, items, slug }) => {
                   {Math.floor(Details.runtime / 60)}h{" "}
                   {String(Details.runtime % 60).padStart(2, "0")}min
                 </div> :null}
-                {Details.number_of_seasons ? <div className="item-year">{Details.number_of_seasons} season{Details.number_of_seasons !== 1? 's': ''}</div>:null}
+                {Details.number_of_seasons ? <div className="item-year">{Details.number_of_seasons} temporada{Details.number_of_seasons !== 1? 's': ''}</div>:null}
                 <div className="item-year">{new Date(selectedItem.first_air_date).getFullYear() || new Date(selectedItem.release_date).getFullYear()}</div>
                 <div className="item-average">{selectedItem.vote_average.toFixed(1)*10}%</div>
               </div>
@@ -237,36 +237,36 @@ export default ({ title, items, slug }) => {
                   className="ver-mais-button"
                   onClick={handleToggleOverview}
                   >
-                    {showFullOverview ? "Read less" : "Read more"}
+                    {showFullOverview ? "ver menos" : "ver mais"}
                   </button>
                 )}
               </div>
-              <div className="item-genres"><strong>Genres: </strong>{Details.genres.map((details) => {return details.name;}).join(", ")}</div>
+              <div className="item-genres"><strong>Genero: </strong>{Details.genres.map((details) => {return details.name;}).join(", ")}</div>
 
 
               {Details &&(
                 <>
-                <h1 className="header-details">Details</h1>
-                {Details.number_of_episodes? <div className="item-season"><strong>Total of episodes:</strong> {Details.number_of_episodes}</div>:null}
-                {Details.release_date? <div className="item-season"><strong>Release date:</strong> {new Date(Details.release_date).toLocaleDateString("pt-BR")}</div>:null}
-                {Details.first_air_date? <div className="item-season"><strong>Release date:</strong> {new Date(Details.first_air_date).toLocaleDateString("pt-BR")}</div>:null}
-                {Details.last_episode_to_air ? <div className="item-season"><strong>Date of the last released episode:</strong> {new Date(Details.last_episode_to_air.air_date).toLocaleDateString("pt-BR")}</div> : null}
-                {Details.next_episode_to_air ? <div className="item-season"><strong>Date of the next episode:</strong> {new Date(Details.next_episode_to_air.air_date).toLocaleDateString("pt-BR")}</div> : null}
-                {Details.budget ? <div className="item-season"><strong>Budget:</strong> {Details.budget.toLocaleString('en-US')}</div> : null}
-                {Details.revenue ? <div className="item-season"><strong>Revenue:</strong> {Details.revenue.toLocaleString('en-US')}</div> : null}
-                {Details.production_countries ? <div className="item-season"><strong>Production countrie{Details.production_countries.length > 1 ? 's:' : ':'}</strong> {Details.production_countries.map((countries)=>{
+                <h1 className="header-details">Informaçoes adicionais</h1>
+                {Details.number_of_episodes? <div className="item-season"><strong>Total de episódios:</strong> {Details.number_of_episodes}</div>:null}
+                {Details.release_date? <div className="item-season"><strong>Data de lançamento:</strong> {new Date(Details.release_date).toLocaleDateString("pt-BR")}</div>:null}
+                {Details.first_air_date? <div className="item-season"><strong>Data de lançamento:</strong> {new Date(Details.first_air_date).toLocaleDateString("pt-BR")}</div>:null}
+                {Details.last_episode_to_air ? <div className="item-season"><strong>Data do ultimo episódio lançado:</strong> {new Date(Details.last_episode_to_air.air_date).toLocaleDateString("pt-BR")}</div> : null}
+                {Details.next_episode_to_air ? <div className="item-season"><strong>Data do próximo episódio:</strong> {new Date(Details.next_episode_to_air.air_date).toLocaleDateString("pt-BR")}</div> : null}
+                {Details.budget ? <div className="item-season"><strong>Orçamento:</strong> {Details.budget.toLocaleString('en-US')}</div> : null}
+                {Details.revenue ? <div className="item-season"><strong>Bilheteria:</strong> {Details.revenue.toLocaleString('en-US')}</div> : null}
+                {Details.production_countries ? <div className="item-season"><strong>{Details.production_countries.length > 1 ? 'Países de produção:' : 'País de produção:'}</strong> {Details.production_countries.map((countries)=>{
                   return countries.name
                 }).join(', ')}</div>:null}
 
                 {Cast.crew.filter((crew)=>{
                   return crew.job === "Producer"
-                }).length > 0 ? <div className="item-season"><strong>Producer:</strong> {Cast.crew.filter((crew)=>{
+                }).length > 0 ? <div className="item-season"><strong>Produtor:</strong> {Cast.crew.filter((crew)=>{
                   return crew.job === "Producer"
                 }).map((producer)=>{return producer.name}).join(", ")}</div>:null}
 
                 {Cast.crew.filter((crew) => crew.job === "Director").length > 0 ? (
                   <div className="item-season">
-                    <strong>Director:</strong>{" "}
+                    <strong>Diretor:</strong>{" "}
                     {Cast.crew
                       .filter((crew) => crew.job === "Director")
                       .map((director) => director.name)
@@ -274,7 +274,7 @@ export default ({ title, items, slug }) => {
                   </div>
                 ) : Cast.crew.filter((crew) => crew.job === "Executive Producer").length > 0 ? (
                   <div className="item-season">
-                    <strong>Executive Producer:</strong>{" "}
+                    <strong>Produtor Executivo:</strong>{" "}
                     {Cast.crew
                       .filter((crew) => crew.job === "Executive Producer")
                       .map((executiveProducer) => executiveProducer.name)
@@ -284,16 +284,16 @@ export default ({ title, items, slug }) => {
                 </>
                 
               )}
-              {Cast.cast.length > 0 ? <h1 className="header-details">Cast</h1> : null}
+              {Cast.cast.length > 0 ? <h1 className="header-details">Elenco</h1> : null}
               {Cast.cast.length > 0 ? (
                 <div className="teste2">
                   <div className="cast-list" style={{marginLeft: scrollX2,width: 'fit-content' }}>
-                    {!isMobileView && (
+                    {!isMobileView && scrollX2 !== 0 &&(
                       <div className="movieRow-left" onClick={handleCastLeft}>
                         <NavigateBeforeIcon style={{ fontSize: 50 }} />
                       </div>
                     )}
-                    {!isMobileView && (
+                    {!isMobileView &&(
                       <div className="movieRow-right" onClick={handleCastRight}>
                         <NavigateNextIcon style={{ fontSize: 50 }} />
                       </div>
@@ -317,29 +317,29 @@ export default ({ title, items, slug }) => {
                 </div>
               ) : null}
               <div className="providers-container">
-                <h1 className="header-details">Where to watch</h1>
+                <h1 className="header-details">Onde assistir</h1>
                 <div className="providers-list">
-                  <strong>Subscription: </strong>
+                  <strong>Stream: </strong>
                   <ul>
                     {providers && providers.results && providers.results.BR && providers.results.BR.flatrate ? providers.results.BR.flatrate.map((provider, index) => {
                       return <li><img src={`https://image.tmdb.org/t/p/w300${provider.logo_path}`}></img></li>
-                    }) : <li>Not available</li>}
+                    }) : <li>Não disponível</li>}
                   </ul>
                 </div>
                 <div className="providers-list">
-                  <strong>Buy: </strong>
+                  <strong>Comprar: </strong>
                   <ul>
                     {providers && providers.results && providers.results.BR && providers.results.BR.buy ? providers.results.BR.buy.map((provider, index) => {
                       return <li><img src={`https://image.tmdb.org/t/p/w300${provider.logo_path}`}></img></li>
-                    }) : <li>Not available</li>}
+                    }) : <li>Não disponível</li>}
                   </ul>
                 </div>
                 <div className="providers-list">
-                  <strong>Rent: </strong>
+                  <strong>Alugar: </strong>
                   <ul>
                     {providers && providers.results && providers.results.BR && providers.results.BR.rent ? providers.results.BR.rent.map((provider, index) => {
                       return <li><img src={`https://image.tmdb.org/t/p/w300${provider.logo_path}`}></img></li>
-                    }) : <li>Not available</li>}
+                    }) : <li>Não disponível</li>}
                   </ul>
                 </div>
               </div>
