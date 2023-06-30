@@ -10,6 +10,7 @@ const API_KEY = "bbd9548ca40094e1de167abba96ec747";
 export default ({ title, items, slug }) => {
   const [scrollX, setScrollX] = useState(0);
   const [scrollX2, setScrollX2] = useState(0);
+  const [scrollX3, setScrollX3] = useState(0);
   const [showVideoPlayer, setShowVideoPlayer] = useState(false);
   const [videoUrl, setVideoUrl] = useState('');
   const [selectedItem, setSelectedItem] = useState('');
@@ -17,6 +18,7 @@ export default ({ title, items, slug }) => {
   const [showFullOverview, setShowFullOverview] = useState(false);
   const [Details, setDetails] = useState(false);
   const [Cast, setCast] = useState(false);
+  const [Similar, setSimilar] = useState(false);
   const [isMobileView, setIsMobileView] = useState(false);
   const isMobile = useMediaQuery('(max-width: 800px)');
 
@@ -70,11 +72,27 @@ export default ({ title, items, slug }) => {
         const CastData = await response.json();
         setCast(CastData);
       }
+      const fetchSimilar = async () =>{
+        let url;
+        if (slug === "originals" || selectedItem.media_type === 'tv') {
+          url = `https://api.themoviedb.org/3/tv/${selectedItem.id}/recommendations?language=pt-BR&api_key=${API_KEY}`;
+        } else if (slug !== "originals" || selectedItem.media_type === 'movie') {
+          url = `https://api.themoviedb.org/3/movie/${selectedItem.id}/recommendations?language=pt-BR&api_key=${API_KEY}`;
+        }
+        const response = await fetch(url);
+        const SimilarData = await response.json();
+        setSimilar(SimilarData);
+      }
       fetchDetails();
       fetchCast();
       fetchProviders();
+      fetchSimilar();
     }
   }, [selectedItem, slug]);
+  useEffect(() => {
+    setDetails(false);
+  }, [selectedItem]);
+  
 
   // useEffect(() => {
   //   if (selectedItem) {
@@ -114,6 +132,7 @@ export default ({ title, items, slug }) => {
 
   useEffect(() => {
     setScrollX2(0);
+    setScrollX3(0);
   }, [selectedItem]);
   const handleCastLeft = () => {
     let x2 = scrollX2 + Math.round(document.querySelector('.teste2').offsetWidth / 2);
@@ -131,6 +150,23 @@ export default ({ title, items, slug }) => {
       x2 = (document.querySelector('.teste2').offsetWidth - listW2);
     }
     setScrollX2(x2);
+  };
+  const handleSimilarLeft = () => {
+    let x3 = scrollX3 + Math.round(document.querySelector('.similar').offsetWidth / 2);
+  
+    if (x3 > 0) {
+      x3 = 0;
+    }
+    setScrollX3(x3);
+  };
+  
+  const handleSimilarRight = () => {
+    let x3 = scrollX3 - Math.round(document.querySelector('.similar').offsetWidth / 2);
+    let listW3 = Similar.results.length * 160;
+    if ((document.querySelector('.similar').offsetWidth - listW3)> x3) {
+      x3 = (document.querySelector('.similar').offsetWidth - listW3);
+    }
+    setScrollX3(x3);
   };
   
   
@@ -262,23 +298,23 @@ export default ({ title, items, slug }) => {
                   return crew.job === "Producer"
                 }).length > 0 ? <div className="item-season"><strong>Produtor:</strong> {Cast.crew.filter((crew)=>{
                   return crew.job === "Producer"
-                }).map((producer)=>{return producer.name}).join(", ")}</div>:null}
+                }).map((producer)=> <span key={producer.id}>{producer.name}</span>).reduce((prev, curr) => [prev, ", ", curr])}</div>:null}
 
                 {Cast.crew.filter((crew) => crew.job === "Director").length > 0 ? (
                   <div className="item-season">
                     <strong>Diretor:</strong>{" "}
                     {Cast.crew
                       .filter((crew) => crew.job === "Director")
-                      .map((director) => director.name)
-                      .join(", ")}
+                      .map((director) => <span key={director.id}>{director.name}</span>)
+                      .reduce((prev, curr) => [prev, ", ", curr])}
                   </div>
                 ) : Cast.crew.filter((crew) => crew.job === "Executive Producer").length > 0 ? (
                   <div className="item-season">
                     <strong>Produtor Executivo:</strong>{" "}
                     {Cast.crew
                       .filter((crew) => crew.job === "Executive Producer")
-                      .map((executiveProducer) => executiveProducer.name)
-                      .join(", ")}
+                      .map((executiveProducer) => <span key={executiveProducer.id}>{executiveProducer.name}</span>)
+                      .reduce((prev, curr) => [prev, ", ", curr])}
                   </div>
                 ) : null}
                 </>
@@ -343,6 +379,45 @@ export default ({ title, items, slug }) => {
                   </ul>
                 </div>
               </div>
+              { Similar &&(   
+              <><h1 className="header-details">Similares a {selectedItem.title || selectedItem.name}</h1>
+              <div className="similar">
+                  <div className="cast-list" style={{ marginLeft: scrollX3, width: 'fit-content' }}>
+                    {!isMobileView && scrollX3 !== 0 && (
+                      <div className="movieRow-left" onClick={handleSimilarLeft}>
+                        <NavigateBeforeIcon style={{ fontSize: 50 }} />
+                      </div>
+                    )}
+                    {!isMobileView && (
+                      <div className="movieRow-right" onClick={handleSimilarRight}>
+                        <NavigateNextIcon style={{ fontSize: 50 }} />
+                      </div>
+                    )}
+                    {Similar.results.length > 0 &&
+                      Similar.results.map((similar) => {
+                        const backgroundImageStyle = {
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                        };
+                        if (similar.poster_path) {
+                          backgroundImageStyle.backgroundImage = `url(https://image.tmdb.org/t/p/w300${similar.poster_path})`;
+                        }
+                        return (
+                          <div onClick={() => 
+                            {if(similar.media_type === "movie"){
+                              navigateToYouTubeMovies(similar)
+                            }
+                            else if(similar.media_type === "tv"){
+                              navigateToYouTubeSeries(similar)
+                            }
+                            }}
+                          className="item-cast" style={backgroundImageStyle}>
+                          </div>
+                        );
+                      })}
+                  </div>
+                </div></>
+              )}
             </div>
           </div>
         </div>

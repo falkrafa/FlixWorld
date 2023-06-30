@@ -41,7 +41,12 @@
   overflow: hidden;
   width: 100%;
 }
+.similar{
+  overflow: hidden;
+  width: 100%;
+}
 .cast-list {
+  background-color: #46d369;
   transition: all ease 0.5s;
   overflow-x: hidden;
   display: flex;
@@ -286,6 +291,9 @@
     overflow-x: auto;
   }
   .teste2{
+    overflow-x: auto;
+  }
+  .similar{
     overflow-x: auto;
   }
   /* .player-container-video{
