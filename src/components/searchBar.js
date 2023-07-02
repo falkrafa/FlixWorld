@@ -29,6 +29,7 @@ export default function Searchbar() {
           className='input-box'
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value.toLowerCase())}
+          style={{ touchAction: 'manipulation' }}
         />
         <CloseIcon style={{ fontSize: '20px' }} onClick={()=>{setSearchQuery('');setResultBox(false)}}/>
       </div>
