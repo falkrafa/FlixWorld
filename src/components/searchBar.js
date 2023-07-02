@@ -14,12 +14,18 @@ export default function Searchbar() {
       setResultBox(false)
     }
   }, [searchQuery])
-
+  const handleFocus = () => {
+    const viewportMetaTag = document.querySelector('meta[name="viewport"]')
+    viewportMetaTag.content = 'width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'
+  }
   const handleSubmit = (e) => {
     e.preventDefault()
     setSearchQuery('')
   }
-
+  const handleBlur = () => {
+    const viewportMetaTag = document.querySelector('meta[name="viewport"]')
+    viewportMetaTag.content = 'width=device-width,initial-scale=1'
+  }
   return (
     <div className='search-container'>
       <div className='search-box'>
@@ -29,7 +35,9 @@ export default function Searchbar() {
           className='input-box'
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value.toLowerCase())}
-          style={{ touchAction: 'manipulation' }}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          
         />
         <CloseIcon style={{ fontSize: '20px' }} onClick={()=>{setSearchQuery('');setResultBox(false)}}/>
       </div>
