@@ -299,6 +299,8 @@
 }
 
 .providers-list ul {
+  flex-wrap: wrap;
+  /* overflow: auto; */
   display: flex;
   align-items: center;
   list-style: none;
@@ -337,6 +339,10 @@
   }
   .similar{
     overflow-x: auto;
+  }
+  .providers-list ul{
+    flex-wrap: nowrap;
+    overflow: auto;
   }
   /* .player-container-video{
     height: 27%;
