@@ -11,6 +11,40 @@
   border-radius: 5px;
   width: 280px;
 }
+.search-icon{
+  color: crimson;
+  cursor: pointer;
+  margin-left: 80%;
+}
+/* search.css */
+.search-bar-open {
+  animation: slide-in 0.5s forwards;
+}
+
+.search-bar-transition {
+  animation: slide-out 0.5s forwards;
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-out {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+
+
 .search-box:focus-within{
   background-color: #212529;
 }

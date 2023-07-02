@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import SearchResult from './searchFilter'
-import "./search.css"
-import CloseIcon from '@mui/icons-material/Close';
+import './search.css'
+import CloseIcon from '@mui/icons-material/Close'
+import SearchIcon from '@mui/icons-material/Search'
 
 export default function Searchbar() {
   const [searchQuery, setSearchQuery] = useState('')
   const [resultBox, setResultBox] = useState(false)
+  const [searchBarOpen, setSearchBarOpen] = useState(false)
 
   useEffect(() => {
     if (searchQuery !== '') {
@@ -14,36 +16,41 @@ export default function Searchbar() {
       setResultBox(false)
     }
   }, [searchQuery])
-  const handleFocus = () => {
-    const viewportMetaTag = document.querySelector('meta[name="viewport"]')
-    viewportMetaTag.content = 'width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'
-  }
+
   const handleSubmit = (e) => {
     e.preventDefault()
     setSearchQuery('')
   }
-  const handleBlur = () => {
-    const viewportMetaTag = document.querySelector('meta[name="viewport"]')
-    viewportMetaTag.content = 'width=device-width,initial-scale=1'
+
+  const handleSearchIconClick = () => {
+    setSearchBarOpen(!searchBarOpen)
   }
+
   return (
-    <div className='search-container'>
-      <div className='search-box'>
-        <input
-          type='text'
-          placeholder='Digite um filme ou serie'
-          className='input-box'
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value.toLowerCase())}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          
-        />
-        <CloseIcon style={{ fontSize: '18px' }} onClick={()=>{setSearchQuery('');setResultBox(false)}}/>
-      </div>
-      {resultBox && (
-        <SearchResult searchQuery={searchQuery} setResultBox={setResultBox} setSearchQuery={setSearchQuery}/>
+    <div className={`search-container ${searchBarOpen ? 'search-bar-open' : ''}`}>
+      {!searchBarOpen && <SearchIcon onClick={handleSearchIconClick} className='search-icon' style={{fontSize:'30px'}}/>}
+      {searchBarOpen && (
+        <div className='search-box'>
+          <input
+            type='text'
+            placeholder='Digite um filme ou série'
+            className='input-box'
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value.toLowerCase())}
+          />
+          {searchQuery !== '' && (
+            <CloseIcon
+              style={{ fontSize: '18px', cursor: 'pointer' }}
+              onClick={() => {
+                setSearchQuery('')
+                setResultBox(false)
+                setSearchBarOpen(false)
+              }}
+            />
+          )}
+        </div>
       )}
+      {resultBox && <SearchResult searchQuery={searchQuery} setResultBox={setResultBox} setSearchQuery={setSearchQuery} />}
     </div>
   )
 }
