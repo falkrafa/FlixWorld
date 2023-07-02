@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./MovieRow.css";
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
@@ -14,12 +14,14 @@ export default ({ title, items, slug }) => {
   const [showVideoPlayer, setShowVideoPlayer] = useState(false);
   const [videoUrl, setVideoUrl] = useState('');
   const [selectedItem, setSelectedItem] = useState('');
+  const [selectedItems, setSelectedItems] = useState([]);
   const [providers, setProviders] = useState();
   const [showFullOverview, setShowFullOverview] = useState(false);
   const [Details, setDetails] = useState(false);
   const [Cast, setCast] = useState(false);
   const [Similar, setSimilar] = useState(false);
   const [isMobileView, setIsMobileView] = useState(false);
+  const movieInfosRef = useRef(null);
   const isMobile = useMediaQuery('(max-width: 800px)');
 
   useEffect(() => {
@@ -89,30 +91,6 @@ export default ({ title, items, slug }) => {
       fetchSimilar();
     }
   }, [selectedItem, slug]);
-  useEffect(() => {
-    setDetails(false);
-  }, [selectedItem]);
-  
-
-  // useEffect(() => {
-  //   if (selectedItem) {
-  //     const fetchDetails = async () => {
-  //       let url;
-  //       if (slug === "originals" || selectedItem.media_type === 'tv') {
-  //         url = `https://api.themoviedb.org/3/tv/${selectedItem.id}?language=pt-BR&api_key=${API_KEY}`;
-  //       } else if (slug !== "originals" || selectedItem.media_type === 'movie') {
-  //         url = `https://api.themoviedb.org/3/movie/${selectedItem.id}?language=pt-BR&api_key=${API_KEY}`;
-  //       }
-
-  //       const response = await fetch(url);
-  //       const DetailsData = await response.json();
-  //       setDetails(DetailsData);
-  //     };
-
-  //     fetchDetails();
-  //   }
-  // }, [selectedItem, slug]);
-
   const handleLeftArrow = () => {
     let x = scrollX + Math.round(window.innerWidth / 2);
     if (x > 0) {
@@ -134,6 +112,7 @@ export default ({ title, items, slug }) => {
     setScrollX2(0);
     setScrollX3(0);
   }, [selectedItem]);
+  
   const handleCastLeft = () => {
     let x2 = scrollX2 + Math.round(document.querySelector('.teste2').offsetWidth / 2);
   
@@ -173,6 +152,7 @@ export default ({ title, items, slug }) => {
   
 
   const navigateToYouTubeMovies = async (item) => {
+    setSelectedItems((prevSelectedItems) => [...prevSelectedItems, selectedItem]);
     console.log(item);
     const response = await fetch(`https://api.themoviedb.org/3/movie/${item.id}/videos?api_key=${API_KEY}`);
     const data = await response.json();
@@ -188,6 +168,7 @@ export default ({ title, items, slug }) => {
   };
 
   const navigateToYouTubeSeries = async (item) => {
+    setSelectedItems((prevSelectedItems) => [...prevSelectedItems, selectedItem]);
     console.log(item);
     const response = await fetch(`https://api.themoviedb.org/3/tv/${item.id}/videos?api_key=${API_KEY}`);
     const data = await response.json();
@@ -201,11 +182,58 @@ export default ({ title, items, slug }) => {
     setSelectedItem(item);
     setShowVideoPlayer(true);
   };
+  window.MyAppGlobal = {
+    navigateToYouTubeMovies,
+    navigateToYouTubeSeries
+  };
+  const handlePreviousItem = () => {
+    const previousItem = selectedItems[selectedItems.length - 1];
 
+    setSelectedItems((prevSelectedItems) => prevSelectedItems.slice(0, -1));
+
+    setSelectedItem(previousItem);
+
+    if (!previousItem) {
+      setShowVideoPlayer(false);
+      return;
+    }
+    const fetchVideoUrl = async () => {
+      let url;
+      if (slug === "originals" || previousItem.media_type === 'tv') {
+        url = `https://api.themoviedb.org/3/tv/${previousItem.id}/videos?api_key=${API_KEY}`;
+      } else if (slug !== "originals" || previousItem.media_type === 'movie') {
+        url = `https://api.themoviedb.org/3/movie/${previousItem.id}/videos?api_key=${API_KEY}`;
+      }
+  
+      const response = await fetch(url);
+      const data = await response.json();
+      const trailers = data.results.filter((result) => result.type === "Trailer");
+  
+      if (trailers.length > 0) {
+        const videoUrl = `https://www.youtube.com/watch?v=${trailers[0].key}`;
+        setVideoUrl(videoUrl);
+      } else {
+        setVideoUrl('');
+      }
+    };
+  
+    fetchVideoUrl();
+  };
+  
   const handleToggleOverview = () => {
     setShowFullOverview(!showFullOverview);
   };
 
+  useEffect(() => {
+    // Verifique se a referência existe e se há um novo selectedItem
+    if (movieInfosRef.current && selectedItem) {
+      // Rola até o topo
+      movieInfosRef.current.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }
+  }, [selectedItem]);
   return (
     <div className="movieRow">
       <h2>{title}</h2>
@@ -244,9 +272,9 @@ export default ({ title, items, slug }) => {
       </div>
       {showVideoPlayer && selectedItem && Details && Cast &&(
         <div className="player-wrapper">
-          <div className="player-container">
+          <div ref={movieInfosRef}  className="player-container">
             <div className="player-container-video">
-              <button className="close-button" onClick={() => {setShowVideoPlayer(false);setSelectedItem('')}}><CloseIcon /></button>
+              <button className="close-button" onClick={handlePreviousItem}><CloseIcon /></button>
               {videoUrl ? (
                 <Player url={videoUrl} />
               ) : (
@@ -325,12 +353,12 @@ export default ({ title, items, slug }) => {
                 <div className="teste2">
                   <div className="cast-list" style={{marginLeft: scrollX2,width: 'fit-content' }}>
                     {!isMobileView && scrollX2 !== 0 &&(
-                      <div className="movieRow-left" onClick={handleCastLeft}>
+                      <div className="movieCast-left" onClick={handleCastLeft}>
                         <NavigateBeforeIcon style={{ fontSize: 50 }} />
                       </div>
                     )}
-                    {!isMobileView &&(
-                      <div className="movieRow-right" onClick={handleCastRight}>
+                    {!isMobileView && (
+                      <div className="movieCast-right" onClick={handleCastRight}>
                         <NavigateNextIcon style={{ fontSize: 50 }} />
                       </div>
                     )}
@@ -379,7 +407,7 @@ export default ({ title, items, slug }) => {
                   </ul>
                 </div>
               </div>
-              { Similar &&(   
+              { Similar && Similar.results.length > 0 &&(   
               <><h1 className="header-details">Similares a {selectedItem.title || selectedItem.name}</h1>
               <div className="similar">
                   <div className="cast-list" style={{ marginLeft: scrollX3, width: 'fit-content' }}>
@@ -411,7 +439,7 @@ export default ({ title, items, slug }) => {
                               navigateToYouTubeSeries(similar)
                             }
                             }}
-                          className="item-cast" style={backgroundImageStyle}>
+                          className="item-similar" style={backgroundImageStyle}>
                           </div>
                         );
                       })}
