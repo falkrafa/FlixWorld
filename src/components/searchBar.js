@@ -39,7 +39,7 @@ export default function Searchbar() {
           onBlur={handleBlur}
           
         />
-        <CloseIcon style={{ fontSize: '20px' }} onClick={()=>{setSearchQuery('');setResultBox(false)}}/>
+        <CloseIcon style={{ fontSize: '18px' }} onClick={()=>{setSearchQuery('');setResultBox(false)}}/>
       </div>
       {resultBox && (
         <SearchResult searchQuery={searchQuery} setResultBox={setResultBox} setSearchQuery={setSearchQuery}/>

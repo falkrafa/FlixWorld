@@ -4,6 +4,7 @@
 }
 .search-box{
   display: flex;
+  align-items: center;
   position: relative;
   padding: 8px 15px;
   background-color: #212529;
@@ -38,6 +39,7 @@
   height: 350px;
 }
 .items-result{
+  cursor: pointer;
   display: flex;
   align-items: center;
   margin-bottom: 0px;

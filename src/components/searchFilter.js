@@ -35,22 +35,21 @@ export default function SearchResult({ searchQuery, setResultBox, setSearchQuery
       {filteredResults.length > 0 ? (
         <>
           {filteredResults.map((result) => (
-              <div className='items-result'>
+              <div className='items-result' onClick={()=> {
+                if(result.media_type === "movie"){
+                  window.MyAppGlobal.navigateToYouTubeMovies(result); 
+                  setResultBox(false);
+                  setSearchQuery('')
+                }else{
+                  window.MyAppGlobal.navigateToYouTubeSeries(result); 
+                  setResultBox(false);
+                  setSearchQuery('')
+                }
+              }}>
                 {result.poster_path &&(
                 <>
                 <img
                   src={`https://image.tmdb.org/t/p/w300/${result.poster_path}`}
-                  onClick={()=> {
-                    if(result.media_type === "movie"){
-                      window.MyAppGlobal.navigateToYouTubeMovies(result); 
-                      setResultBox(false);
-                      setSearchQuery('')
-                    }else{
-                      window.MyAppGlobal.navigateToYouTubeSeries(result); 
-                      setResultBox(false);
-                      setSearchQuery('')
-                    }
-                  }}
                   />
                   <div className='name-year'>
                     <p className='text-white fw-bold mb-0 medium'>
