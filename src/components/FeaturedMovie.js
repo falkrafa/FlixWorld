@@ -62,7 +62,7 @@ export default ({item}) => {
               <button onClick={() => getFeaturedTrailer(item)} className="button-1"><PlayArrowIcon/>Assistir</button>
               <a href={`/list/add/${item.id}`} className="button-2">+ Minha Lista</a>
             </div>
-            <div className="featured-genres"><strong>Genres:</strong> {genres.join(', ')}</div>
+            <div className="featured-genres"><strong>Genero:</strong> {genres.join(', ')}</div>
           </div>
         </div>
       </div>

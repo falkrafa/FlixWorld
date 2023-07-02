@@ -43,7 +43,9 @@ export default () => {
   }, [])
   return(
     <div className="page">
-      <Header black={blackHeader}/>
+      {movielist.length > 0 &&
+        <Header black={blackHeader}/>
+      }
       {featuredData && 
         <Featuredmovie item={featuredData}/>
       }

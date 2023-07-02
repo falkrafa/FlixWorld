@@ -157,10 +157,15 @@ export default ({ title, items, slug }) => {
     const response = await fetch(`https://api.themoviedb.org/3/movie/${item.id}/videos?api_key=${API_KEY}`);
     const data = await response.json();
     const trailers = data.results.filter((result) => result.type === "Trailer");
-    if (trailers.length > 0) {
+    if (trailers.length === 1) {
       const videoUrl = `https://www.youtube.com/watch?v=${trailers[0].key}`;
       setVideoUrl(videoUrl);
-    } else {
+    } 
+    else if(trailers.length > 1){
+      const videoUrl = `https://www.youtube.com/watch?v=${trailers[1].key}`;
+      setVideoUrl(videoUrl);
+    }
+    else {
       setVideoUrl('');
     }
     setSelectedItem(item);
@@ -172,11 +177,22 @@ export default ({ title, items, slug }) => {
     console.log(item);
     const response = await fetch(`https://api.themoviedb.org/3/tv/${item.id}/videos?api_key=${API_KEY}`);
     const data = await response.json();
+    console.log(data)
     const trailers = data.results.filter((result) => result.type === "Trailer");
-    if (trailers.length > 0) {
+    const teaser = data.results.filter((result) => result.type === "Teaser");
+    if (trailers.length === 1) {
       const videoUrl = `https://www.youtube.com/watch?v=${trailers[0].key}`;
       setVideoUrl(videoUrl);
-    } else {
+    } 
+    else if(trailers.length > 1){
+      const videoUrl = `https://www.youtube.com/watch?v=${trailers[1].key}`;
+      setVideoUrl(videoUrl);
+    }
+    else if(teaser.length > 0){
+      const videoUrl = `https://www.youtube.com/watch?v=${teaser[0].key}`;
+      setVideoUrl(videoUrl);
+    }
+    else {
       setVideoUrl('');
     }
     setSelectedItem(item);
@@ -208,11 +224,20 @@ export default ({ title, items, slug }) => {
       const response = await fetch(url);
       const data = await response.json();
       const trailers = data.results.filter((result) => result.type === "Trailer");
-  
-      if (trailers.length > 0) {
+      const teaser = data.results.filter((result) => result.type === "Teaser");
+      if (trailers.length === 1) {
         const videoUrl = `https://www.youtube.com/watch?v=${trailers[0].key}`;
         setVideoUrl(videoUrl);
-      } else {
+      } 
+      else if(trailers.length > 1){
+        const videoUrl = `https://www.youtube.com/watch?v=${trailers[1].key}`;
+        setVideoUrl(videoUrl);
+      }
+      else if(teaser.length > 0){
+        const videoUrl = `https://www.youtube.com/watch?v=${teaser[0].key}`;
+        setVideoUrl(videoUrl);
+      }
+      else {
         setVideoUrl('');
       }
     };

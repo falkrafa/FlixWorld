@@ -52,14 +52,17 @@ export default function SearchResult({ searchQuery, setResultBox, setSearchQuery
                     }
                   }}
                   />
-                  <div>
-                    <p className='text-white fw-bold mb-0 small'>
+                  <div className='name-year'>
+                    <p className='text-white fw-bold mb-0 medium'>
                       {result.title ? result.title : null}
                       {result.name ? result.name : null}
                     </p>
-                    <p className='text-secondary fw-bold mb-0 small'>
+                    {result.title? <p className='text-secondary fw-bold mb-0 small'>
                       {result.title && result.release_date.slice(0, 4)}
-                    </p>
+                    </p> : null}
+                    {result.name? <p className='text-secondary fw-bold mb-0 small'>
+                      {result.name && result.first_air_date.slice(0, 4)}
+                    </p> : null}
                   </div></>
                 )}
               </div>
