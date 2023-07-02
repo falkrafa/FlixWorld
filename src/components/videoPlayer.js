@@ -12,7 +12,7 @@ const Player = ({ url }) => {
         height='100%'
         config={{
           youtube: {
-            playerVars: {controls: 1, autoplay: true, fs:1,iv_load_policy:3,modestbranding:1,rel:0}
+            playerVars: {controls: 1, autoplay: true, fs:1,iv_load_policy:3,modestbranding:1,rel:0,cc_load_policy:1}
           }
         }}
       />

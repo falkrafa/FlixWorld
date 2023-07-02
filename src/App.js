@@ -17,11 +17,14 @@ export default () => {
       setMovieList(list)
       // console.log(list)
       // getting featured movie 
-      let originals = list.filter(i=>i.slug === 'originals');
-      let randomOriginals = Math.floor(Math.random()*(originals[0].items.results.length-1));
-      let chosen =  originals[0].items.results[randomOriginals];
-      let chosenInfo = await API.getMovieInfo(chosen.id, 'tv');
-      setFeatureData(chosenInfo);
+      let originals = list.filter((i) => i.slug === 'trendings');
+    let randomOriginals = originals[0].items.results.filter((item) => item.media_type === 'tv');
+
+    if (randomOriginals.length > 0) {
+      let chosen = randomOriginals[Math.floor(Math.random() * randomOriginals.length)];
+      // let chosenInfo = await API.getMovieInfo(chosen.id, chosen.media_type);
+      setFeatureData(chosen);
+    }
     }
     loadAll();
   },[]);
