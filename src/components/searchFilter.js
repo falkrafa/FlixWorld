@@ -68,7 +68,7 @@ export default function SearchResult({ searchQuery, setResultBox, setSearchQuery
           ))}
         </>
       ) : (
-        <p style={{padding:'0px 30px'}}>No results found</p>
+        <p style={{padding:'0px 30px'}}>Nenhum resultado encontrado</p>
       )}
     </div>
   )

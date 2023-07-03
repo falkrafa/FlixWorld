@@ -40,7 +40,7 @@ export default ({item}) => {
       <div className="featured-vertical">
         <div className="featured-horizontal">
           <div className="featured-name">
-            {item.original_name}
+            {item.name}
           </div>
           <div className="featured-info">
             <div className="featured-points">{item.vote_average} pontos</div>
@@ -48,8 +48,8 @@ export default ({item}) => {
             <div className="featured-seasons">{Details.number_of_seasons} temporada{Details.number_of_seasons !== 1? 's': ''}</div>
             <div className="featured-overview">{description}</div>
             <div className="featured-buttons">
-              <button onClick={()=>{window.MyAppGlobal.navigateToYouTubeSeries(item)}} className="button-1">Mais informações</button>
-              <a href={`/list/add/${item.id}`} className="button-2">+ Minha Lista</a>
+              <button onClick={()=>{window.MyAppGlobal.navigateToYouTubeSeries(item)}} className="button-2">Mais informações</button>
+              {/* <a href={`/list/add/${item.id}`} className="button-2">+ Minha Lista</a> */}
             </div>
             <div className="featured-genres"><strong>Genero:</strong> {genres.join(', ')}</div>
           </div>
