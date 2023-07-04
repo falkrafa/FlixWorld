@@ -378,12 +378,12 @@ export default ({ title, items, slug }) => {
                 <div className="teste2">
                   <div className="cast-list" style={{marginLeft: scrollX2,width: 'fit-content' }}>
                     {!isMobileView && scrollX2 !== 0 &&(
-                      <div className="movieCast-left" onClick={handleCastLeft}>
+                      <div className="movieRow-left" onClick={handleCastLeft}>
                         <NavigateBeforeIcon style={{ fontSize: 50 }} />
                       </div>
                     )}
                     {!isMobileView && (
-                      <div className="movieCast-right" onClick={handleCastRight}>
+                      <div className="movieRow-right" onClick={handleCastRight}>
                         <NavigateNextIcon style={{ fontSize: 50 }} />
                       </div>
                     )}

@@ -28,7 +28,7 @@ export default function Searchbar() {
 
   return (
     <div className={`search-container ${searchBarOpen ? 'search-bar-open' : ''}`}>
-      {!searchBarOpen && <SearchIcon onClick={handleSearchIconClick} className='search-icon' style={{fontSize:'30px'}}/>}
+      {!searchBarOpen && <div className='search-icon-box'><SearchIcon onClick={handleSearchIconClick} className='search-icon' style={{fontSize:'30px'}}/></div>}
       {searchBarOpen && (
         <div className='search-box'>
           <input

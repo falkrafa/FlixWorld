@@ -8,13 +8,24 @@
   position: relative;
   padding: 8px 15px;
   background-color: #212529;
+  border: 2px solid crimson;
   border-radius: 5px;
   width: 280px;
+}
+.search-icon-box{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid crimson;
+  width: fit-content;
+  height: fit-content;
+  margin-left: 80%;
+  padding: 5px;
+  border-radius: 10px;
 }
 .search-icon{
   color: crimson;
   cursor: pointer;
-  margin-left: 80%;
 }
 /* search.css */
 .search-bar-open {
@@ -68,6 +79,9 @@
   padding: 3px 0px;
   background-color: #212529;
   overflow-y: auto;
+  border-left: 2px solid crimson;
+  border-bottom: 2px solid crimson;
+  border-right: 2px solid crimson;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
   height: 350px;

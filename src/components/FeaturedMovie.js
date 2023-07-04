@@ -43,7 +43,7 @@ export default ({item}) => {
             {item.name}
           </div>
           <div className="featured-info">
-            <div className="featured-points">{item.vote_average} pontos</div>
+            <div className="featured-points">{item.vote_average.toFixed(1)*10}%</div>
             <div className="featured-year">{firstDate.getFullYear()}</div>
             <div className="featured-seasons">{Details.number_of_seasons} temporada{Details.number_of_seasons !== 1? 's': ''}</div>
             <div className="featured-overview">{description}</div>
