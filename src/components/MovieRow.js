@@ -4,7 +4,7 @@ import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import CloseIcon from '@mui/icons-material/Close';
 import Player from "./videoPlayer";
-import { useMediaQuery } from '@mui/material';
+import { Rating, useMediaQuery } from '@mui/material';
 const API_KEY = "bbd9548ca40094e1de167abba96ec747";
 
 export default ({ title, items, slug }) => {
@@ -20,8 +20,13 @@ export default ({ title, items, slug }) => {
   const [Details, setDetails] = useState(false);
   const [Cast, setCast] = useState(false);
   const [Similar, setSimilar] = useState(false);
+  const [Rating, setRating] = useState(false);
+  const [Rating2, setRating2] = useState(false);
   const [isMobileView, setIsMobileView] = useState(false);
   const movieInfosRef = useRef(null);
+  // const [castItem,setCastItem] = useState(false);
+  // const [castMovies,setCastMovies] = useState(false);
+  // const [castName,setCastName] = useState(false);
   const isMobile = useMediaQuery('(max-width: 800px)');
 
   useEffect(() => {
@@ -85,6 +90,22 @@ export default ({ title, items, slug }) => {
         const SimilarData = await response.json();
         setSimilar(SimilarData);
       }
+      const fetchAge = async () =>{
+        let url;
+        if (slug === "originals" || selectedItem.media_type === 'tv') {
+          url = `https://api.themoviedb.org/3/tv/${selectedItem.id}/content_ratings?api_key=${API_KEY}`;
+        } else if (slug !== "originals" || selectedItem.media_type === 'movie') {
+          url = `https://api.themoviedb.org/3/movie/${selectedItem.id}/release_dates?api_key=${API_KEY}`;
+        }
+        const response = await fetch(url);
+        const AgeData = await response.json();
+        const filter = AgeData.results.filter((result)=> result.iso_3166_1 == "BR")
+        const rating = filter[0].rating ? filter[0].rating : null
+        setRating(rating)
+        const rating2 = filter[0].release_dates[0].certification ? filter[0].release_dates[0].certification : null
+        setRating2(rating2)
+      }
+      fetchAge();
       fetchDetails();
       fetchCast();
       fetchProviders();
@@ -107,7 +128,11 @@ export default ({ title, items, slug }) => {
     }
     setScrollX(x);
   };
-
+  useEffect(() => {
+    setRating(false);
+    setRating2(false);
+  }, [selectedItem]);
+  
   useEffect(() => {
     setScrollX2(0);
     setScrollX3(0);
@@ -244,11 +269,36 @@ export default ({ title, items, slug }) => {
   
     fetchVideoUrl();
   };
+  function getBackgroundColor(rating) {
+    switch (rating) {
+      case "L":
+        return "SpringGreen"; // cor para classificação L
+      case "10":
+        return "DeepSkyBlue"; // cor para classificação 10
+      case "12":
+        return "#FFD700"; // cor para classificação 12
+      case "14":
+        return "orange"; // cor para classificação 14
+      case "16":
+        return "red"; // cor para classificação 16
+      case "18":
+        return "#212529"; // cor para classificação 18
+      default:
+        return "gray"; // cor padrão caso nenhum valor correspondente seja encontrado
+    }
+  }
   
   const handleToggleOverview = () => {
     setShowFullOverview(!showFullOverview);
   };
-
+  // const handleCast = async (cast) =>{
+  //   const response = await fetch(`https://api.themoviedb.org/3/person/${cast.id}/combined_credits?language=pt-BR&api_key=${API_KEY}`)
+  //   const data = await response.json();
+  //   const castMovies = data.cast
+  //   setCastMovies(castMovies);
+  //   setCastName(cast.name);
+  //   setCastItem(true);
+  // }
   useEffect(() => {
     // Verifique se a referência existe e se há um novo selectedItem
     if (movieInfosRef.current && selectedItem) {
@@ -310,15 +360,24 @@ export default ({ title, items, slug }) => {
             </div>
             <div className="movies-infos">
               <div className="item-name">{selectedItem.title || selectedItem.name}</div>
-              <div className="item-details">
+              {Details.number_of_seasons ? <div className="item-details">
                 {Details.runtime ? <div className="item-year">
                   {Math.floor(Details.runtime / 60)}h{" "}
                   {String(Details.runtime % 60).padStart(2, "0")}min
                 </div> :null}
                 {Details.number_of_seasons ? <div className="item-year">{Details.number_of_seasons} temporada{Details.number_of_seasons !== 1? 's': ''}</div>:null}
+                {Rating ? <div className="item-age" style={{ backgroundColor: getBackgroundColor(Rating) }}>{Rating}</div>:null}
                 <div className="item-year">{new Date(selectedItem.first_air_date).getFullYear() || new Date(selectedItem.release_date).getFullYear()}</div>
                 <div className="item-average">{selectedItem.vote_average.toFixed(1)*10}%</div>
-              </div>
+              </div>:<div className="item-details2">
+                {Details.runtime ? <div className="item-year">
+                  {Math.floor(Details.runtime / 60)}h{" "}
+                  {String(Details.runtime % 60).padStart(2, "0")}min
+                </div> :null}
+                {Rating2 ? <div className="item-age" style={{ backgroundColor: getBackgroundColor(Rating2) }}>{Rating2}</div>:null}
+                <div className="item-year">{new Date(selectedItem.first_air_date).getFullYear() || new Date(selectedItem.release_date).getFullYear()}</div>
+                <div className="item-average">{selectedItem.vote_average.toFixed(1)*10}%</div>
+              </div>}
               <div className="item-overview">
                 {selectedItem.overview && (showFullOverview ? selectedItem.overview : `${selectedItem.overview.substring(0, 320)}`)}
                 {selectedItem.overview && selectedItem.overview.length > 320 && (
@@ -341,8 +400,8 @@ export default ({ title, items, slug }) => {
                 {Details.first_air_date? <div className="item-season"><strong>Data de lançamento:</strong> {new Date(Details.first_air_date).toLocaleDateString("pt-BR")}</div>:null}
                 {Details.last_episode_to_air ? <div className="item-season"><strong>Data do ultimo episódio lançado:</strong> {new Date(Details.last_episode_to_air.air_date).toLocaleDateString("pt-BR")}</div> : null}
                 {Details.next_episode_to_air ? <div className="item-season"><strong>Data do próximo episódio:</strong> {new Date(Details.next_episode_to_air.air_date).toLocaleDateString("pt-BR")}</div> : null}
-                {Details.budget ? <div className="item-season"><strong>Orçamento:</strong> {Details.budget.toLocaleString('en-US')}</div> : null}
-                {Details.revenue ? <div className="item-season"><strong>Bilheteria:</strong> {Details.revenue.toLocaleString('en-US')}</div> : null}
+                {Details.budget ? <div className="item-season"><strong>Orçamento:</strong> ${Details.budget.toLocaleString('en-US')}</div> : null}
+                {Details.revenue ? <div className="item-season"><strong>Bilheteria:</strong> ${Details.revenue.toLocaleString('en-US')}</div> : null}
                 {Details.production_countries ? <div className="item-season"><strong>{Details.production_countries.length > 1 ? 'Países de produção:' : 'País de produção:'}</strong> {Details.production_countries.map((countries)=>{
                   return countries.name
                 }).join(', ')}</div>:null}
@@ -475,6 +534,26 @@ export default ({ title, items, slug }) => {
           </div>
         </div>
       )}
+      {/* {castItem && castName &&(
+        <div className="player-wrapper2">
+          <div className="player-container">
+            <header className="cast-item-header"><strong>Filmes e séries com <span style={{color:"crimson"}}>{castName}</span></strong>  <button className="close-buttonCast" onClick={()=>setCastItem(false)}><CloseIcon style={{fontSize:28}}/></button></header>
+            <div className="CastMovies">
+              {castMovies ? castMovies.map((item) => {
+                      return <img src={`https://image.tmdb.org/t/p/w300${item.poster_path}`} onClick={() => 
+                      {if(item.media_type === "movie"){
+                        navigateToYouTubeMovies(item)
+                        setCastItem(false)
+                      }
+                      else if(item.media_type === "tv"){
+                        navigateToYouTubeSeries(item)
+                      }
+                      }}></img>
+                    }) : <h1>Não disponível</h1>}
+            </div>
+          </div>
+        </div>
+      )} */}
     </div>
   );
 };
