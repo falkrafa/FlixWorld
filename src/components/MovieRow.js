@@ -122,7 +122,7 @@ export default ({ title, items, slug }) => {
 
   const handleRightArrow = () => {
     let x = scrollX - Math.round(window.innerWidth / 2);
-    let listW = items.results.length * 150;
+    let listW = items.results.length * 170;
     if ((window.innerWidth - listW) > x) {
       x = (window.innerWidth - listW) - 60;
     }
