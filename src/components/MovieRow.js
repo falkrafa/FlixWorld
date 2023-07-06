@@ -300,9 +300,7 @@ export default ({ title, items, slug }) => {
   //   setCastItem(true);
   // }
   useEffect(() => {
-    // Verifique se a referência existe e se há um novo selectedItem
     if (movieInfosRef.current && selectedItem) {
-      // Rola até o topo
       movieInfosRef.current.scrollTo({
         top: 0,
         behavior: "smooth"

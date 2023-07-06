@@ -159,11 +159,22 @@
   align-items: center;
   background-color: rgba(0, 0, 0, 0.8);
 }
+@keyframes teste {
+  0% {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 .player-container {
+  animation: teste 0.8s ease-in-out;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  width: 50%;
+  width: 40%;
   height: 95%;
   background-color: rgba(0, 0, 0, 1);
   border-radius: 10px;
@@ -222,7 +233,19 @@
   width: 100% !important;
   height: 100% !important;
 }
-
+@keyframes closeEf {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+}
+.closeEf{
+  animation: closeEf 0.8s ease-in-out;
+}
 .close-button {
   align-self: flex-end;
   padding-top:10px;
