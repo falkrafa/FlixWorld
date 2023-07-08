@@ -181,13 +181,19 @@ export default ({ title, items, slug }) => {
     console.log(item);
     const response = await fetch(`https://api.themoviedb.org/3/movie/${item.id}/videos?api_key=${API_KEY}`);
     const data = await response.json();
+    console.log(data)
     const trailers = data.results.filter((result) => result.type === "Trailer");
+    const teaser = data.results.filter((result) => result.type === "Teaser");
     if (trailers.length === 1) {
       const videoUrl = `https://www.youtube.com/watch?v=${trailers[0].key}`;
       setVideoUrl(videoUrl);
     } 
     else if(trailers.length > 1){
       const videoUrl = `https://www.youtube.com/watch?v=${trailers[1].key}`;
+      setVideoUrl(videoUrl);
+    }
+    else if(teaser.length > 0){
+      const videoUrl = `https://www.youtube.com/watch?v=${teaser[0].key}`;
       setVideoUrl(videoUrl);
     }
     else {
@@ -291,6 +297,9 @@ export default ({ title, items, slug }) => {
   const handleToggleOverview = () => {
     setShowFullOverview(!showFullOverview);
   };
+  useEffect(()=>{
+    setShowFullOverview(false)
+  },[selectedItem]);
   // const handleCast = async (cast) =>{
   //   const response = await fetch(`https://api.themoviedb.org/3/person/${cast.id}/combined_credits?language=pt-BR&api_key=${API_KEY}`)
   //   const data = await response.json();
