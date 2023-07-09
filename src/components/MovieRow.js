@@ -178,10 +178,8 @@ export default ({ title, items, slug }) => {
 
   const navigateToYouTubeMovies = async (item) => {
     setSelectedItems((prevSelectedItems) => [...prevSelectedItems, selectedItem]);
-    console.log(item);
     const response = await fetch(`https://api.themoviedb.org/3/movie/${item.id}/videos?api_key=${API_KEY}`);
     const data = await response.json();
-    console.log(data)
     const trailers = data.results.filter((result) => result.type === "Trailer");
     const teaser = data.results.filter((result) => result.type === "Teaser");
     if (trailers.length === 1) {
@@ -205,10 +203,8 @@ export default ({ title, items, slug }) => {
 
   const navigateToYouTubeSeries = async (item) => {
     setSelectedItems((prevSelectedItems) => [...prevSelectedItems, selectedItem]);
-    console.log(item);
     const response = await fetch(`https://api.themoviedb.org/3/tv/${item.id}/videos?api_key=${API_KEY}`);
     const data = await response.json();
-    console.log(data)
     const trailers = data.results.filter((result) => result.type === "Trailer");
     const teaser = data.results.filter((result) => result.type === "Teaser");
     if (trailers.length === 1) {
